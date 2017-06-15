@@ -1,7 +1,9 @@
+/* eslint-disable */
 const React = require('react');
 const ReactDOM = require('react-dom');
-// import highlight from 'babel-plugin-transform-syntax-highlight/highlight';
-const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+
+import highlight from 'babel-plugin-transform-syntax-highlight/highlight';
+// const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
 
 const highlightJsCss = document.createElement('link');
 highlightJsCss.rel = 'stylesheet';
@@ -16,19 +18,25 @@ prismCss.href =
 document.head.appendChild(prismCss);
 
 {
-  const a = highlight.html({ language: 'javascript' }, `
+  const a = highlight.html(
+    { language: 'javascript' },
+    `
     const foo = 'bar';
     const bar = '{# props.bar #}';
-  `);
+  `
+  );
   const containerA = document.createElement('div');
   containerA.innerHTML = a({ bar: 'xxx' });
   document.body.appendChild(containerA);
 }
 
-const SomeCode = highlight.react({ language: 'javascript', highlight: 'prism' }, `
+const SomeCode = highlight.react(
+  { language: 'javascript', highlight: 'prism' },
+  `
   const foo = "bar";
   const bar = "{# props.bar #}";
-`);
+`
+);
 
 const containerB = document.createElement('div');
 document.body.appendChild(containerB);

@@ -2,7 +2,6 @@
 
 const _ = require('lodash');
 const stripIndent = require('strip-indent');
-const prettier = require('prettier');
 const babylon = require('babylon');
 const convertToHtml = require('./lib/convert-to-html');
 const convertToReact = require('./lib/convert-to-react');
@@ -10,7 +9,6 @@ const convertToReact = require('./lib/convert-to-react');
 const validInvocationOptions = new Set(['language', 'highlight', 'delimiters']);
 const DEFAULT_PACKAGE_NAME =
   'babel-plugin-transform-syntax-highlight/highlight';
-let moduleVariableName;
 
 const moduleBindings = new Map();
 
@@ -48,8 +46,9 @@ module.exports = babel => {
       );
     }
 
-    const binding = path.scope.bindings[parentNode.id.name];
-    moduleBindings.set(parentNode.id.name, binding);
+    const bindingName = parentNode.id.name;
+    const binding = path.scope.bindings[bindingName];
+    moduleBindings.set(bindingName, binding);
     path.remove();
   };
 
@@ -62,7 +61,9 @@ module.exports = babel => {
         `Use a default import from "${packageName}"`
       );
     }
-    moduleVariableName = firstSpecifierPath.node.local.name;
+    const bindingName = firstSpecifierPath.node.local.name;
+    const binding = path.scope.bindings[bindingName];
+    moduleBindings.set(bindingName, binding);
     path.remove();
   };
 
@@ -147,7 +148,7 @@ module.exports = babel => {
     const replacementExpression = propertyName === 'html'
       ? convertToHtml(options, code)
       : convertToReact(options, code, variableName);
-    console.log(replacementExpression);
+
     const parsedReplacementExpression = babylon.parseExpression(
       replacementExpression,
       { plugins: ['jsx'] }

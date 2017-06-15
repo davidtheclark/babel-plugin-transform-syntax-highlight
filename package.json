@@ -4,7 +4,11 @@
   "description": "Experiment!",
   "main": "index.js",
   "scripts": {
-    "start": "budo test/manual.js -d -l -- -t babelify"
+    "precommit": "lint-staged",
+    "lint": "eslint .",
+    "format": "prettier --write --single-quote *.js '{lib,test}/**/*.js'",
+    "start": "budo test/manual.js -d -l -- -t babelify",
+    "pretest": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -16,14 +20,31 @@
     "url": "https://github.com/davidtheclark/babel-plugin-transform-syntax-highlight/issues"
   },
   "homepage": "https://github.com/davidtheclark/babel-plugin-transform-syntax-highlight#readme",
+  "dependencies": {
+    "babylon": "^6.17.3",
+    "balanced-match": "^1.0.0",
+    "highlight.js": "^9.12.0",
+    "htmltojsx": "^0.2.6",
+    "lodash": "^4.17.4",
+    "prismjs": "^1.6.0",
+    "strip-indent": "^2.0.0"
+  },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babelify": "^7.3.0",
     "budo": "^10.0.3",
+    "eslint": "^4.0.0",
+    "eslint-plugin-node": "^5.0.0",
     "prettier": "^1.4.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
+  },
+  "lint-staged": {
+    "*.js '{lib,test}/**/*.js'": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
   },
   "babel": {
     "presets": [
@@ -36,14 +57,5 @@
   },
   "engines": {
     "node": ">=4"
-  },
-  "dependencies": {
-    "babylon": "^6.17.3",
-    "balanced-match": "^1.0.0",
-    "highlight.js": "^9.12.0",
-    "htmltojsx": "^0.2.6",
-    "lodash": "^4.17.4",
-    "prismjs": "^1.6.0",
-    "strip-indent": "^2.0.0"
   }
 }
