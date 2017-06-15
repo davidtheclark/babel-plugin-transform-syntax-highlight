@@ -6,7 +6,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "lint": "eslint .",
-    "format": "prettier --write --single-quote *.js '{lib,test}/**/*.js'",
+    "format": "prettier --write --single-quote '{lib/,test/,}**/*.js'",
     "start": "budo test/manual.js -d -l -- -t babelify",
     "pretest": "npm run lint"
   },
@@ -41,7 +41,7 @@
     "react-dom": "^15.6.1"
   },
   "lint-staged": {
-    "*.js '{lib,test}/**/*.js'": [
+    "{lib/,test/,}**/*.js": [
       "prettier --single-quote --write",
       "git add"
     ]
