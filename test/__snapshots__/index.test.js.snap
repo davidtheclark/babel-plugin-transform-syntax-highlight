@@ -1,0 +1,148 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Babel options 1`] = `
+"'use strict';
+
+var snippet = function snippet(props) {
+  return '<pre><code class=\\"hljs\\"><span class=\\"hljs-attribute\\">const foo</span> = ' + props.foo + ';\\\\n<span class=\\"hljs-attribute\\">const bar</span> = <span class=\\"hljs-string\\">\\\\'{# props.bar #}\\\\'</span>;</code></pre>';
+};"
+`;
+
+exports[`Local options 1`] = `
+"'use strict';
+
+var html = function html(props) {
+  return '<pre><code class=\\"hljs\\"><span class=\\"hljs-keyword\\">const</span> bar = <span class=\\"hljs-string\\">\\\\'' + props.bar + '\\\\'</span>;</code></pre>';
+};
+var element = function element(props) {
+  return React.createElement(
+    'pre',
+    null,
+    React.createElement(
+      'code',
+      { className: 'language-javascript' },
+      React.createElement(
+        'span',
+        { className: 'token keyword' },
+        'const'
+      ),
+      ' bar ',
+      React.createElement(
+        'span',
+        { className: 'token operator' },
+        '='
+      ),
+      ' ',
+      React.createElement(
+        'span',
+        { className: 'token string' },
+        '\\\\'',
+        props.bar,
+        '\\\\''
+      ),
+      React.createElement(
+        'span',
+        { className: 'token punctuation' },
+        ';'
+      )
+    )
+  );
+};"
+`;
+
+exports[`basic html 1`] = `
+"'use strict';
+
+var snippet = function snippet(props) {
+  return '<pre><code class=\\"hljs\\"><span class=\\"hljs-keyword\\">const</span> foo = <span class=\\"hljs-string\\">\\\\'bar\\\\'</span>;\\\\n<span class=\\"hljs-keyword\\">const</span> bar = <span class=\\"hljs-string\\">\\\\'' + props.bar + '\\\\'</span>;</code></pre>';
+};"
+`;
+
+exports[`basic react 1`] = `
+"'use strict';
+
+var snippet = function snippet(props) {
+  return React.createElement(
+    'pre',
+    null,
+    React.createElement(
+      'code',
+      { className: 'hljs' },
+      React.createElement(
+        'span',
+        { className: 'hljs-keyword' },
+        'const'
+      ),
+      ' foo = ',
+      React.createElement(
+        'span',
+        { className: 'hljs-string' },
+        '\\\\'bar\\\\''
+      ),
+      ';',
+      \\"\\\\n\\",
+      React.createElement(
+        'span',
+        { className: 'hljs-keyword' },
+        'const'
+      ),
+      ' bar = ',
+      React.createElement(
+        'span',
+        { className: 'hljs-string' },
+        '\\\\'',
+        props.bar,
+        '\\\\''
+      ),
+      ';'
+    )
+  );
+};"
+`;
+
+exports[`code as string literal 1`] = `
+"'use strict';
+
+var snippet = function snippet(props) {
+    return React.createElement(
+        'pre',
+        null,
+        React.createElement(
+            'code',
+            { className: 'hljs' },
+            React.createElement(
+                'span',
+                { className: 'hljs-keyword' },
+                'var'
+            ),
+            ' x = ',
+            React.createElement(
+                'span',
+                { className: 'hljs-number' },
+                '3'
+            ),
+            ';'
+        )
+    );
+};"
+`;
+
+exports[`import instead of require 1`] = `
+"'use strict';
+
+var snippet = function snippet(props) {
+  return '<pre><code class=\\"hljs\\"><span class=\\"hljs-keyword\\">const</span> foo = <span class=\\"hljs-string\\">\\\\'bar\\\\'</span>;\\\\n<span class=\\"hljs-keyword\\">const</span> bar = <span class=\\"hljs-string\\">\\\\'' + props.bar + '\\\\'</span>;</code></pre>';
+};"
+`;
+
+exports[`require in nested scope 1`] = `
+"'use strict';
+
+function x() {
+  if (true) {
+    var snippet = function snippet(props) {
+      return '<pre><code class=\\"hljs\\">const bar = x =&gt; x * ' + props.factor + ';</code></pre>';
+    };
+  }
+}"
+`;

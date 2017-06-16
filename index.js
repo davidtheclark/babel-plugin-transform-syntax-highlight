@@ -10,9 +10,8 @@ const validInvocationOptions = new Set(['language', 'highlight', 'delimiters']);
 const DEFAULT_PACKAGE_NAME =
   'babel-plugin-transform-syntax-highlight/highlight';
 
-const moduleBindings = new Map();
-
 module.exports = babel => {
+  const bindingsByFile = new Map();
   const t = babel.types;
 
   const parseOptions = path => {
@@ -28,7 +27,21 @@ module.exports = babel => {
           .get(`properties.${i}.key`)
           .buildCodeFrameError(`Invalid option "${key}"`);
       }
-      const value = p.value.value;
+      let value;
+      if (
+        key === 'delimiters' &&
+        t.isArrayExpression(p.value) &&
+        p.value.elements.length === 2 &&
+        p.value.elements.every(t.isStringLiteral)
+      ) {
+        value = p.value.elements.map(el => el.value);
+      } else if (key !== 'delimiters' && t.isStringLiteral(p.value)) {
+        value = p.value.value;
+      } else {
+        throw path
+          .get(`properties.${i}.value`)
+          .buildCodeFrameError(`Invalid option value for "${key}"`);
+      }
       options[key] = value;
     });
     return options;
@@ -47,14 +60,19 @@ module.exports = babel => {
     }
 
     const bindingName = parentNode.id.name;
-    const binding = path.scope.bindings[bindingName];
-    moduleBindings.set(bindingName, binding);
-    path.remove();
+    const file = path.hub.file;
+    const fileBindings = bindingsByFile.get(file) || new Set();
+    bindingsByFile.set(file, fileBindings.add(bindingName));
+    path.parentPath.remove();
   };
 
   const importDeclarationVisitor = (path, state) => {
     const packageName = state.opts.packageName || DEFAULT_PACKAGE_NAME;
-    if (!t.isLiteral(path.node.source, { value: packageName })) return;
+    if (
+      !t.isLiteral(path.node.source) ||
+      path.node.source.value !== packageName
+    )
+      return;
     const firstSpecifierPath = path.get('specifiers.0');
     if (!t.isImportDefaultSpecifier(firstSpecifierPath)) {
       throw firstSpecifierPath.buildCodeFrameError(
@@ -62,8 +80,9 @@ module.exports = babel => {
       );
     }
     const bindingName = firstSpecifierPath.node.local.name;
-    const binding = path.scope.bindings[bindingName];
-    moduleBindings.set(bindingName, binding);
+    const file = path.hub.file;
+    const fileBindings = bindingsByFile.get(file) || new Set();
+    bindingsByFile.set(file, fileBindings.add(bindingName));
     path.remove();
   };
 
@@ -80,25 +99,21 @@ module.exports = babel => {
     return path.node.quasis.map(q => q.value.cooked).join('');
   };
 
-  const isModuleBindingInScope = (moduleName, scope) => {
-    if (scope.bindings[moduleName]) return true;
-    if (scope.parent) return isModuleBindingInScope(moduleName, scope.parent);
-    return false;
-  };
-
   const callExpressionVisitor = (path, state) => {
     const callee = path.get('callee').node;
     if (t.isIdentifier(callee, { name: 'require' })) {
       return requireVisitor(path, state);
     }
-    if (moduleBindings.size === 0) return;
     if (!t.isMemberExpression(callee)) return;
     const objectName = callee.object.name;
     const propertyName = callee.property.name;
 
     // Ensure a module binding is in scope.
-    if (!moduleBindings.has(objectName)) return;
-    if (isModuleBindingInScope(moduleBindings.get(objectName), path.scope)) {
+    const file = path.hub.file;
+    const fileBindings = bindingsByFile.get(file);
+    if (!fileBindings || !fileBindings.has(objectName)) return;
+
+    if (!path.scope.hasBinding(objectName)) {
       throw path.buildCodeFrameError(`Module "${objectName}" is not in scope`);
     }
     if (propertyName !== 'html' && propertyName !== 'react') {
@@ -123,7 +138,7 @@ module.exports = babel => {
       argumentOptions = parseOptions(firstArgument);
       codePath = path.get('arguments.1');
     } else {
-      codePath = path.get('arguments.2');
+      codePath = path.get('arguments.0');
     }
 
     if (!t.isTemplateLiteral(codePath) && !t.isStringLiteral(codePath)) {
