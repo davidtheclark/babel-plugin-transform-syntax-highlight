@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.org/davidtheclark/babel-plugin-transform-syntax-highlight.svg?branch=master)](https://travis-ci.org/davidtheclark/babel-plugin-transform-syntax-highlight)
 
-🚧 🚧 **EXPERIMENTAL!** 🚧 🚧
-
 Performs syntax highlighting of string and template literals *during Babel compilation*, rather than at runtime.
 
 Transforms a special function call into one of the following:
