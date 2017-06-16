@@ -127,6 +127,14 @@ var snippet = function snippet(props) {
 };"
 `;
 
+exports[`highlight.js automatic language detection 1`] = `
+"'use strict';
+
+var snippet = function snippet(props) {
+  return '<pre><code class=\\"hljs\\">const foo = <span class=\\"hljs-function\\"><span class=\\"hljs-params\\">()</span> =&gt;</span> <span class=\\"hljs-string\\">\\\\'' + props.foo + '\\\\'</span>;</code></pre>';
+};"
+`;
+
 exports[`highlighting numeric values 1`] = `
 "'use strict';
 

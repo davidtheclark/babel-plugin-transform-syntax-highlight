@@ -20,9 +20,6 @@ module.exports = babel => {
   const t = babel.types;
 
   const parseOptions = path => {
-    if (!t.isObjectExpression(path)) {
-      throw path.buildCodeFrameError('An options object is required');
-    }
     const properties = path.node.properties;
     const options = {};
     properties.forEach((p, i) => {

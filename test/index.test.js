@@ -110,3 +110,174 @@ test('highlighting numeric values', () => {
   `;
   expect(transform(code)).toMatchSnapshot();
 });
+
+test('highlight.js automatic language detection', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const snippet = highlight.html(\`
+      const foo = () => '{# props.foo #}';
+    \`);
+  `;
+  expect(transform(code)).toMatchSnapshot();
+});
+
+test('fails with an invalid option key', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const snippet = highlight.html({ lasnguage: 'javascript' }, \`
+      const foo = '{# props.foo #}';
+      const bar = {# props.bar #};
+    \`);
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain('Invalid option "lasnguage"');
+});
+
+test('fails with an invalid option value', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const snippet = highlight.html({ language: 6 }, \`
+      const foo = '{# props.foo #}';
+      const bar = {# props.bar #};
+    \`);
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain('Invalid option value for "language"');
+});
+
+test('fails with a non-declarator require call', () => {
+  const code = `
+    let highlight;
+    highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain('to a new variable');
+});
+
+test('fails with a non-default import', () => {
+  const code = `
+    import { highlight } from 'babel-plugin-transform-syntax-highlight/highlight';
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain('Use a default import');
+});
+
+test('fails with placeholders in the template literal', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const snippet = highlight.html({ language: 'javascript' }, \`
+      const \${x} = '{# props.foo #}';
+    \`);
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain(
+    'Placeholders inside template literal code are not supported'
+  );
+});
+
+test('fails when module is not in scope', () => {
+  const code = `
+    function x() {
+      const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    }
+    const snippet = highlight.html({ language: 'javascript' }, \`
+      const foo = '{# props.foo #}';
+    \`);
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain('not in scope');
+});
+
+test('fails with methods other than "html" and "react"', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const snippet = highlight.jsx({ language: 'javascript' }, \`
+      const foo = '{# props.foo #}';
+    \`);
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain('module exposes "html" and "react"');
+});
+
+test('fails without variable assignment', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const x = {
+      foo: highlight.html({ language: 'javascript' }, \`
+        const foo = '{# props.foo #}';
+      \`)
+    };
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain('must be assigned to a new variable');
+});
+
+test('fails when code is not a string or template literal', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const snippet = highlight.html({ language: 'javascript' }, { x: 3 });
+  `;
+  let error;
+  try {
+    transform(code);
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain(
+    'Code argument must be a string or template literal'
+  );
+});
+
+test('fails on invalid highlight option', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const snippet = highlight.html({ language: 'javascript' }, 'var x = 3;');
+  `;
+  let error;
+  try {
+    transform(code, { highlight: 'pism' });
+  } catch (e) {
+    error = e;
+  }
+  expect(error.message).toContain('Invalid value for "highlight" option');
+});
