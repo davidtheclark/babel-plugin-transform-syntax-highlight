@@ -127,6 +127,14 @@ var snippet = function snippet(props) {
 };"
 `;
 
+exports[`highlighting numeric values 1`] = `
+"'use strict';
+
+var snippet = function snippet(props) {
+  return '<pre><code class=\\"hljs\\"><span class=\\"hljs-keyword\\">const</span> foo = <span class=\\"hljs-string\\">\\\\'' + props.foo + '\\\\'</span>;\\\\n<span class=\\"hljs-keyword\\">const</span> bar = <span class=\\"hljs-number\\">' + props.bar + '</span>;</code></pre>';
+};"
+`;
+
 exports[`import instead of require 1`] = `
 "'use strict';
 
@@ -141,7 +149,7 @@ exports[`require in nested scope 1`] = `
 function x() {
   if (true) {
     var snippet = function snippet(props) {
-      return '<pre><code class=\\"hljs\\">const bar = x =&gt; x * ' + props.factor + ';</code></pre>';
+      return '<pre><code class=\\"hljs\\"><span class=\\"hljs-keyword\\">const</span> bar = <span class=\\"hljs-function\\"><span class=\\"hljs-params\\">x</span> =&gt;</span> x * <span class=\\"hljs-number\\">' + props.factor + '</span>;</code></pre>';
     };
   }
 }"

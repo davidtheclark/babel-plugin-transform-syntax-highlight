@@ -99,3 +99,14 @@ test('Local options', () => {
   `;
   expect(transform(code)).toMatchSnapshot();
 });
+
+test('highlighting numeric values', () => {
+  const code = `
+    const highlight = require('babel-plugin-transform-syntax-highlight/highlight');
+    const snippet = highlight.html({ language: 'javascript' }, \`
+      const foo = '{# props.foo #}';
+      const bar = {# props.bar #};
+    \`);
+  `;
+  expect(transform(code)).toMatchSnapshot();
+});

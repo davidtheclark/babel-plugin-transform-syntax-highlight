@@ -22,11 +22,11 @@ document.head.appendChild(prismCss);
     { language: 'javascript' },
     `
     const foo = 'bar';
-    const bar = '{# props.bar #}';
+    const bar = {# props.bar #};
   `
   );
   const containerA = document.createElement('div');
-  containerA.innerHTML = a({ bar: 'xxx' });
+  containerA.innerHTML = a({ bar: 73 });
   document.body.appendChild(containerA);
 }
 

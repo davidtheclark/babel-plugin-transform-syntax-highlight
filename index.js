@@ -6,7 +6,12 @@ const babylon = require('babylon');
 const convertToHtml = require('./lib/convert-to-html');
 const convertToReact = require('./lib/convert-to-react');
 
-const validInvocationOptions = new Set(['language', 'highlight', 'delimiters']);
+const validInvocationOptions = new Set([
+  'language',
+  'highlight',
+  'delimiters',
+  'numericDelimiters'
+]);
 const DEFAULT_PACKAGE_NAME =
   'babel-plugin-transform-syntax-highlight/highlight';
 
@@ -156,6 +161,7 @@ module.exports = babel => {
     }
     if (optionsFromBabelConfig.delimiters === undefined) {
       optionsFromBabelConfig.delimiters = ['{#', '#}'];
+      optionsFromBabelConfig.numericDelimiters = ['{##', '##}'];
     }
     const options = Object.assign({}, optionsFromBabelConfig, argumentOptions);
     const rawCode = getStringyLiteralValue(codePath);
