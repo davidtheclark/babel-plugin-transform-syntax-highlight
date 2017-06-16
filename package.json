@@ -1,11 +1,11 @@
 {
   "name": "babel-plugin-transform-syntax-highlight",
   "version": "0.1.0",
-  "description": "Experiment!",
+  "description": "Perform syntax highlighting of string and template literals during Babel compilation, rather than at runtime",
   "main": "index.js",
   "scripts": {
     "precommit": "lint-staged",
-    "lint": "eslint .",
+    "lint": "eslint index.js test lib",
     "format": "prettier --write --single-quote '{lib/**/,test/**/,}*.js'",
     "start": "budo test/manual.js -d -l -- -t babelify",
     "jest": "jest",
@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/davidtheclark/babel-plugin-transform-syntax-highlight.git"
   },
-  "author": "",
+  "author": "David Clark",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/davidtheclark/babel-plugin-transform-syntax-highlight/issues"
